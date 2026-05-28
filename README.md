@@ -1,5 +1,7 @@
 # to-obsidian-claude
 
+> Languages: **English** | [한국어](README.ko.md)
+
 Reliable Claude Code helper for publishing code-based markdown documentation
 (PROJECT_MAP, code analyses, architecture notes…) into your **Obsidian vault**.
 
@@ -94,6 +96,46 @@ The main session executes the skill steps inline, keeping you in the conversatio
   --note  "code-analysis.md" \
   --source "/path/to/your-doc.md"
 ```
+
+## Options & environment variables
+
+The bash backend supports these (since v0.2). All optional; the v0.1 calling convention still works untouched.
+
+| Flag | Effect |
+|------|--------|
+| `--dry-run` | Run all checks but **don't write**. Prints vault/target/mode/source-size/marker so you can preview before committing. |
+| `--append` | Append the source to an existing note (creates it if absent) instead of overwriting. Same safety rules apply — foreign notes still refused without `--force`. |
+| `--ensure-marker` | Auto-inject `generated-by: to-obsidian` into the source's frontmatter if missing (or create a minimal frontmatter block). Off by default — keeps the explicit-marker discipline for callers managing their own frontmatter. |
+| `--force` | Overwrite/append into a note lacking the safety marker. Foreign-content escape hatch. |
+
+| Env var | Effect |
+|---------|--------|
+| `OBSIDIAN_DEFAULT_VAULT` | Default vault when `--vault` is omitted. Set once in your shell and drop the flag for your primary vault. |
+| `OBSIDIAN_DEFAULT_FOLDER` | Prefix prepended to `--note` (when the note isn't absolute). Useful for routing all publishes into e.g. `code-maps/` or `daily/`. |
+
+### Examples
+
+```bash
+# Preview a publish before committing
+~/.claude/skills/to-obsidian/scripts/publish-obsidian.sh \
+  --vault MyVault --note "code-analysis.md" --source ./PROJECT_MAP.md --dry-run
+
+# Append a section to a daily log
+publish-obsidian.sh --vault MyVault --note "daily/2026-05-28.md" \
+  --source ./morning-notes.md --append
+
+# Take an existing markdown file with no frontmatter and publish safely
+publish-obsidian.sh --vault MyVault --note "imports/raw.md" \
+  --source ./external.md --ensure-marker
+
+# Set defaults once per shell session
+export OBSIDIAN_DEFAULT_VAULT=MyVault
+export OBSIDIAN_DEFAULT_FOLDER=code-maps
+publish-obsidian.sh --note "navlue.md" --source ./map.md
+# → writes to MyVault/code-maps/navlue.md
+```
+
+`publish-obsidian.sh --help` shows the full list inline.
 
 ## Layout
 

@@ -76,6 +76,12 @@ The script:
 - Warns if other notes in the vault share the same basename (Obsidian URI ambiguity).
 - Writes via `cp` + size-verification with one retry (defeats the `/mnt/c` + OneDrive misplacement bug).
 
+**Useful options (v0.2+):**
+- `--dry-run` — when the user asks "어디로 가는지 미리 보여줘" / "preview only", pass this. The script prints target/mode/marker without writing.
+- `--append` — when the user wants to extend an existing daily log / running note rather than overwrite it ("이어쓰기", "append", "add to").
+- `--ensure-marker` — when the user-provided source markdown has no frontmatter and they don't want you to adapt it manually. The script auto-injects the safety marker.
+- `OBSIDIAN_DEFAULT_VAULT`, `OBSIDIAN_DEFAULT_FOLDER` (env vars) — if either is set in the user's shell, the script auto-fills. Do NOT override an explicit user-provided `--vault` / `--note`; only honor the env vars when the user omitted them.
+
 ### 5. Verify and report
 
 After publishing (either backend):
